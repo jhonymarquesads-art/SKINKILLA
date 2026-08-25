@@ -76,7 +76,7 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
       {image && !loading && (
         <button
           onClick={() => setShowPayment(true)}
-          className="w-full py-3 bg-amber-500 hover:bg-amber-600 font-bold text-slate-950 rounded-2xl transition shadow-lg shadow-amber-500/10"
+          className="w-full py-3 bg-orange-500 hover:bg-orange-600 font-bold text-slate-950 rounded-2xl transition shadow-lg shadow-orange-500/10"
         >
           🔒 Pagar R$ 19,90 para Analisar
         </button>
@@ -85,8 +85,8 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
       {/* Indicador de processamento pós-pagamento */}
       {loading && (
         <div className="py-4 space-y-2">
-          <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-emerald-400 font-semibold text-xs animate-pulse">
+          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-yellow-400 font-semibold text-xs animate-pulse">
             Pagamento confirmado! Gerando análise com IA...
           </p>
         </div>
@@ -95,7 +95,6 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
       {/* Modal de Pagamento */}
       {showPayment && (
         <PaymentModal
-          onClose={() => setShowPayment(false)}
           onSuccess={handlePaymentSuccess}
         />
       )}
