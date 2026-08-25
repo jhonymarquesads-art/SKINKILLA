@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { asaasRequest, type AsaasPayment, PAID_PAYMENT_STATUSES } from '@/lib/asaas';
 
 // Mock function to simulate skin analysis
 // In a real application, this would call a vision API (like MediaPipe or Google Vision)
@@ -110,6 +112,14 @@ const generateSummary = (metrics: any) => {
 
 export async function POST(request: Request) {
   try {
+    const paymentId = (await cookies()).get('skinkilla_payment_id')?.value;
+    if (!paymentId) {
+      return NextResponse.json({ error: 'Pagamento necessario para iniciar a analise.' }, { status: 402 });
+    }
+    const payment = await asaasRequest<AsaasPayment>(`/payments/${paymentId}`);
+    if (!PAID_PAYMENT_STATUSES.has(payment.status)) {
+      return NextResponse.json({ error: 'Pagamento ainda nao confirmado.' }, { status: 402 });
+    }
     const { image } = await request.json();
     
     if (!image) {

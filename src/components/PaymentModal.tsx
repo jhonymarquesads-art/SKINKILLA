@@ -1,157 +1,96 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 interface PaymentModalProps {
+  onSuccess: () => void;
+}
+// 1. Verifique se a interface do PaymentModal aceita a propriedade onSuccess:
+interface PaymentModalProps {
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
-export default function PaymentModal({ onClose, onSuccess }: PaymentModalProps) {
-  const [loading, setLoading] = useState(true);
+// 2. Insira este botão dentro do modal (logo abaixo da imagem do QR Code):
+<button
+  type="button"
+  onClick={onSuccess}
+  className="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-semibold transition mt-2"
+>
+  🧪 Simular Pagamento Aprovado (Modo Teste)
+</button>
+type PixData = { id: string; payload: string; encodedImage: string };
+
+export default function PaymentModal({ onSuccess }: PaymentModalProps) {
+  const [payer, setPayer] = useState({ name: '', email: '', cpfCnpj: '' });
+  const [pixData, setPixData] = useState<PixData | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pixData, setPixData] = useState<{
-    id: string;
-    payload: string;
-    encodedImage: string;
-  } | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Gerar o Pix assim que o modal for aberto
   useEffect(() => {
-    async function generatePix() {
+    if (!pixData) return;
+    const poll = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        
-        const response = await fetch('/api/pix', {
-          method: 'POST',
-        });
-
-        if (!response.ok) {
-          throw new Error('Falha ao gerar o Pix. Verifique a chave de API.');
-        }
-
+        const response = await fetch(`/api/pix?paymentId=${encodeURIComponent(pixData.id)}`, { cache: 'no-store' });
         const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        setPixData(data);
-      } catch (err: any) {
-        setError(err.message || 'Erro inesperado ao criar o pagamento.');
-      } finally {
-        setLoading(false);
+        if (response.ok && ['RECEIVED', 'CONFIRMED'].includes(data.status)) onSuccess();
+      } catch {
+        // A proxima consulta tenta novamente sem interromper a tela de pagamento.
       }
-    }
+    };
+    void poll();
+    const interval = window.setInterval(() => void poll(), 4000);
+    return () => window.clearInterval(interval);
+  }, [onSuccess, pixData]);
 
-    generatePix();
-  }, []);
-
-  // Função para copiar o código Pix Copia e Cola
-  const handleCopy = () => {
-    if (pixData?.payload) {
-      navigator.clipboard.writeText(pixData.payload);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
+  const createPix = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/pix', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payer),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? 'Nao foi possivel gerar o Pix.');
+      setPixData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro inesperado ao criar o pagamento.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const copyPayload = async () => {
+    if (!pixData) return;
+    await navigator.clipboard.writeText(pixData.payload);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 3000);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-3xl p-6 shadow-2xl text-slate-100 relative space-y-5 animate-in fade-in zoom-in duration-200">
-        
-        {/* Botão Fechar */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition"
-        >
-          ✕
-        </button>
-
-        {/* Título */}
-        <div className="text-center space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">
-            Pagamento Seguro via Pix
-          </span>
-          <h2 className="text-xl font-bold text-white pt-2">
-            Desbloquear Análise Completa
-          </h2>
-          <p className="text-xs text-slate-400">
-            Escaneie o QR Code ou copie a chave Pix abaixo.
-          </p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="relative w-full max-w-md space-y-5 rounded-3xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-2xl">
+        <div className="space-y-1 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Pagamento seguro via Pix</p>
+          <h2 className="pt-2 text-xl font-bold text-white">Desbloquear analise completa</h2>
         </div>
-
-        {/* Estado de Carregamento */}
-        {loading && (
-          <div className="py-12 flex flex-col items-center justify-center space-y-3">
-            <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-sm text-slate-400">Gerando QR Code Pix...</p>
-          </div>
-        )}
-
-        {/* Mensagem de Erro */}
-        {error && (
-          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded-2xl text-xs text-center space-y-2">
-            <p>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="underline text-rose-300 hover:text-rose-100"
-            >
-              Tentar novamente
-            </button>
-          </div>
-        )}
-
-        {/* Exibição do QR Code e Copia e Cola */}
-        {!loading && !error && pixData && (
+        {!pixData ? (
+          <form onSubmit={createPix} className="space-y-3">
+            <input required minLength={3} value={payer.name} onChange={(event) => setPayer({ ...payer, name: event.target.value })} placeholder="Nome completo" className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm" />
+            <input required type="email" value={payer.email} onChange={(event) => setPayer({ ...payer, email: event.target.value })} placeholder="E-mail" className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm" />
+            <input value={payer.cpfCnpj} onChange={(event) => setPayer({ ...payer, cpfCnpj: event.target.value })} placeholder="CPF ou CNPJ (opcional)" className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm" />
+            <button disabled={loading} className="w-full rounded-xl bg-emerald-500 py-3 text-sm font-bold text-slate-950 disabled:opacity-60">{loading ? 'Gerando Pix...' : 'Gerar Pix de R$ 19,90'}</button>
+          </form>
+        ) : (
           <div className="space-y-4 text-center">
-            
-            {/* Valor */}
-            <div className="bg-slate-800/60 border border-slate-700/50 p-3 rounded-2xl flex items-center justify-between px-4">
-              <span className="text-xs text-slate-400">Valor total:</span>
-              <span className="text-lg font-bold text-emerald-400">R$ 19,90</span>
-            </div>
-
-            {/* Imagem do QR Code */}
-            {pixData.encodedImage && (
-              <div className="bg-white p-3 rounded-2xl inline-block shadow-inner mx-auto">
-                <img
-                  src={`data:image/png;base64,${pixData.encodedImage}`}
-                  alt="QR Code Pix"
-                  className="w-48 h-48 object-contain rounded-lg"
-                />
-              </div>
-            )}
-
-            {/* Botão Copiar Código Pix */}
-            <div className="space-y-2">
-              <button
-                onClick={handleCopy}
-                className={`w-full py-3 px-4 rounded-2xl font-semibold text-sm transition flex items-center justify-center gap-2 ${
-                  copied
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold'
-                }`}
-              >
-                {copied ? (
-                  <>
-                    <span>✓</span> Código Pix Copiado!
-                  </>
-                ) : (
-                  <>
-                    <span>📋</span> Copiar Código Pix (Copia e Cola)
-                  </>
-                )}
-              </button>
-              
-              <p className="text-[11px] text-slate-500">
-                Após efetuar o pagamento, seu relatório será liberado automaticamente.
-              </p>
-            </div>
+            <p className="text-sm text-slate-400">Pague o QR Code. A analise sera liberada automaticamente apos a confirmacao.</p>
+            <div className="inline-block rounded-2xl bg-white p-3"><img src={`data:image/png;base64,${pixData.encodedImage}`} alt="QR Code Pix" className="h-48 w-48 object-contain" /></div>
+            <button onClick={copyPayload} className="w-full rounded-xl bg-emerald-500 py-3 text-sm font-bold text-slate-950">{copied ? 'Codigo Pix copiado' : 'Copiar codigo Pix'}</button>
           </div>
         )}
+        {error && <p className="text-center text-sm text-rose-400">{error}</p>}
       </div>
     </div>
   );

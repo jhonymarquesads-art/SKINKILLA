@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import PaymentModal from './PaymentModal';
 
 interface CameraScannerProps {
   onComplete: (data?: any) => void;
@@ -8,10 +9,11 @@ interface CameraScannerProps {
 
 export default function CameraScanner({ onComplete }: CameraScannerProps) {
   const [image, setImage] = useState<string | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Upload de imagem local
+  // Selecionar imagem local
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -21,9 +23,11 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
     }
   };
 
-  // Enviar para a API de Análise
-  const handleAnalyze = async () => {
+  // Disparado APÓS o pagamento ser confirmado
+  const handlePaymentSuccess = async () => {
+    setShowPayment(false);
     setLoading(true);
+
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
@@ -33,6 +37,7 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
       const data = await res.json();
       onComplete(data);
     } catch {
+      // Fallback em caso de erro na API
       onComplete({ skinType: 'Mista', score: 85 });
     } finally {
       setLoading(false);
@@ -41,19 +46,19 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl text-center space-y-4">
-      <h2 className="text-xl font-bold text-white">Captura / Análise Facial</h2>
+      <h2 className="text-xl font-bold text-white">Análise Facial por IA</h2>
 
       <div className="w-full h-64 bg-slate-950 border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center overflow-hidden relative">
         {image ? (
           <img src={image} alt="Preview" className="w-full h-full object-cover" />
         ) : (
           <div className="space-y-2 text-slate-400">
-            <p className="text-sm">Nenhuma câmera detectada no PC.</p>
+            <p className="text-sm">Envie sua foto para o diagnóstico</p>
             <button
               onClick={() => fileInputRef.current?.click()}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs text-white rounded-xl transition"
             >
-              📁 Enviar foto do computador
+              📁 Enviar Foto
             </button>
           </div>
         )}
@@ -67,14 +72,32 @@ export default function CameraScanner({ onComplete }: CameraScannerProps) {
         className="hidden"
       />
 
-      {image && (
+      {/* Botão para abrir modal de pagamento */}
+      {image && !loading && (
         <button
-          onClick={handleAnalyze}
-          disabled={loading}
-          className="w-full py-3 bg-amber-500 hover:bg-amber-600 font-bold text-slate-950 rounded-2xl transition disabled:opacity-50"
+          onClick={() => setShowPayment(true)}
+          className="w-full py-3 bg-amber-500 hover:bg-amber-600 font-bold text-slate-950 rounded-2xl transition shadow-lg shadow-amber-500/10"
         >
-          {loading ? 'Analisando Pele...' : 'Iniciar Análise por IA →'}
+          🔒 Pagar R$ 19,90 para Analisar
         </button>
+      )}
+
+      {/* Indicador de processamento pós-pagamento */}
+      {loading && (
+        <div className="py-4 space-y-2">
+          <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-emerald-400 font-semibold text-xs animate-pulse">
+            Pagamento confirmado! Gerando análise com IA...
+          </p>
+        </div>
+      )}
+
+      {/* Modal de Pagamento */}
+      {showPayment && (
+        <PaymentModal
+          onClose={() => setShowPayment(false)}
+          onSuccess={handlePaymentSuccess}
+        />
       )}
     </div>
   );
