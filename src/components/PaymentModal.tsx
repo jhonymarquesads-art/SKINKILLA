@@ -5,20 +5,7 @@ import { FormEvent, useEffect, useState } from 'react';
 interface PaymentModalProps {
   onSuccess: () => void;
 }
-// 1. Verifique se a interface do PaymentModal aceita a propriedade onSuccess:
-interface PaymentModalProps {
-  onClose: () => void;
-  onSuccess: () => void;
-}
 
-// 2. Insira este botão dentro do modal (logo abaixo da imagem do QR Code):
-<button
-  type="button"
-  onClick={onSuccess}
-  className="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-semibold transition mt-2"
->
-  🧪 Simular Pagamento Aprovado (Modo Teste)
-</button>
 type PixData = { id: string; payload: string; encodedImage: string };
 
 export default function PaymentModal({ onSuccess }: PaymentModalProps) {
@@ -50,7 +37,9 @@ export default function PaymentModal({ onSuccess }: PaymentModalProps) {
     setError(null);
     try {
       const response = await fetch('/api/pix', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payer),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payer),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? 'Nao foi possivel gerar o Pix.');
@@ -88,6 +77,13 @@ export default function PaymentModal({ onSuccess }: PaymentModalProps) {
             <p className="text-sm text-slate-400">Pague o QR Code. A analise sera liberada automaticamente apos a confirmacao.</p>
             <div className="inline-block rounded-2xl bg-white p-3"><img src={`data:image/png;base64,${pixData.encodedImage}`} alt="QR Code Pix" className="h-48 w-48 object-contain" /></div>
             <button onClick={copyPayload} className="w-full rounded-xl bg-emerald-500 py-3 text-sm font-bold text-slate-950">{copied ? 'Codigo Pix copiado' : 'Copiar codigo Pix'}</button>
+            <button
+              type="button"
+              onClick={onSuccess}
+              className="w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-semibold transition mt-2"
+            >
+              🧪 Simular Pagamento Aprovado (Modo Teste)
+            </button>
           </div>
         )}
         {error && <p className="text-center text-sm text-rose-400">{error}</p>}
