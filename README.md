@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Análise Facial de Pele - Avaliação Gratuita com IA
 
-## Getting Started
+Este é um protótipo de aplicação para análise facial de pele que oferece uma avaliação gratuita feita por IA antes do pagamento via Pix.
 
-First, run the development server:
+## Funcionalidades
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Botão "Fazer Avaliação Gratuita" que inicia uma análise simulada de pele por IA
+- Exibe resultados mockados de hidratação, oleosidade, manchas, rugas e score geral
+- Após a análise gratuita, apresenta informações para pagamento via Pix para acesso ao plano completo
+- Interface responsiva e amigável
+
+## Como usar
+
+1. Abra o arquivo `index.html` em qualquer navegador moderno
+2. Clique no botão "Fazer Avaliação Gratuita"
+3. Aguarde a análise simulada (2 segundos)
+4. Visualize os resultados da análise
+5. Após os resultados, aparecerão as instruções para pagamento via Pix
+
+## Tecnologias utilizadas
+
+- HTML5
+- CSS3
+- JavaScript Vanilla (sem frameworks)
+
+## Observações importantes
+
+- Esta é uma versão de protótipo com dados mockados. Para uma versão real, seria necessário:
+  - Integrar com um serviço real de IA para análise facial (como AWS Rekognition, Google Cloud Vision, ou um modelo customizado)
+  - Implementar autenticação e armazenamento seguro de dados
+  - Integrar com uma gateway de pagamento Pix real (como Mercado Pago, PagSeguro, ou API do Banco Central)
+  - Adicionar validação de upload de imagem e processamento real
+
+## Estrutura dos arquivos
+
+```
+facial-skin-analysis/
+├── index.html      # Página principal com interface e lógica
+└── README.md       # Este arquivo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Personalização
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para adaptar esta solução para uso real:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Substitua a função `startAssessment()` por uma chamada real à sua API de IA
+2. Implemente o upload e processamento de imagem facial
+3. Substitua os dados mockados pelos resultados reais da análise
+4. Integre com uma API de pagamento Pix válida
+5. Adicione validações de segurança e tratamento de erros
 
-## Learn More
+## Licença
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Este projeto está sob a licença MIT - sinta-se livre para usar, modificar e distribuir.

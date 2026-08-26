@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Facial de Pele</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+
+        .assessment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .results h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-section {
+            display: none;
+            background: #e8f8f5;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .payment-section h3 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .pix-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .pix-code {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .pix-code img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Análise Facial de Pele</h1>
+
+        <div class="assessment-card">
+            <p>Descubra o estado da sua pele com nossa análise gratuita feita por IA. Basta tirar uma selfie ou fazer upload de uma foto clara do seu rosto.</p>
+
+            <button id="fazer-avaliacao" class="btn">
+                Fazer Avaliação Gratuita
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Analisando sua pele...</p>
+            </div>
+
+            <div class="results" id="results">
+                <h3>Resultados da Análise</h3>
+                <div class="result-item">
+                    <span>Hidratação:</span>
+                    <span id="hydration-value">--</span>
+                </div>
+                <div class="result-item">
+                    <span>Oleosidade:</span>
+                    <span id="oiliness-value">--</span>
+                </div>
+                <div class="result-item">
+                    <span>Manchas:</span>
+                    <span id="spots-value">--</span>
+                </div>
+                <div class="result-item">
+                    <span>Rugas:</span>
+                    <span id="wrinkles-value">--</span>
+                </div>
+                <div class="result-item">
+                    <span>Score Geral:</span>
+                    <span id="score-value">--</span>/100
+                </div>
+            </div>
+
+            <div class="payment-section" id="payment-section">
+                <h3>Próximos Passos</h3>
+                <p>Com base na análise, recomendamos um tratamento personalizado. Para acessar o plano completo e agendar sua consulta, realize o pagamento via Pix:</p>
+
+                <div class="pix-info">
+                    <p><strong>Chave Pix:</strong> analise@pele.com.br</p>
+                    <p><strong>Valor:</strong> R$ 49,90</p>
+                    <p><strong>Descrição:</strong> Plano de Tratamento Personalizado</p>
+                </div>
+
+                <div class="pix-code" id="pix-code">
+                    <!-- QR code will be generated here -->
+                    <div>QR Code do Pix</div>
+                </div>
+
+                <button id="confirm-payment" class="btn" style="background: #2ecc71;">
+                    Confirmar Pagamento
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Análise gratuita feita por IA. Pagamento via Pix para acesso ao plano completo.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fazer-avaliacao').addEventListener('click', startAssessment);
+
+        function startAssessment() {
+            const button = document.getElementById('fazer-avaliacao');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const paymentSection = document.getElementById('payment-section');
+
+            // Disable button and show loading
+            button.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            paymentSection.style.display = 'none';
+
+            // Simulate AI processing time (2 seconds)
+            setTimeout(() => {
+                // Hide loading, show results
+                loading.style.display = 'none';
+                results.style.display = 'block';
+
+                // Generate mock results
+                const hydration = Math.floor(Math.random() * 40) + 60; // 60-100
+                const oiliness = Math.floor(Math.random() * 50); // 0-50
+                const spots = Math.floor(Math.random() * 30); // 0-30
+                const wrinkles = Math.floor(Math.random() * 40); // 0-40
+                const score = Math.floor((hydration + (100 - oiliness) + (100 - spots) + (100 - wrinkles)) / 4);
+
+                document.getElementById('hydration-value').textContent = hydration + '%';
+                document.getElementById('oiliness-value').textContent = oiliness + '%';
+                document.getElementById('spots-value').textContent = spots + '%';
+                document.getElementById('wrinkles-value').textContent = wrinkles + '%';
+                document.getElementById('score-value').textContent = score;
+
+                // Show payment section after results
+                setTimeout(() => {
+                    paymentSection.style.display = 'block';
+
+                    // Generate a simple QR code representation (in real app, use a QR library)
+                    const pixCodeDiv = document.getElementById('pix-code');
+                    pixCodeDiv.innerHTML = `
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Chave Pix:</div>
+                            <div style="font-family: monospace; background: white; padding: 0.5rem; border-radius: 4px; display: inline-block;">
+                                analise@pele.com.br
+                            </div>
+                        </div>
+                    `;
+                }, 1000);
+
+                // Re-enable button
+                button.disabled = false;
+            }, 2000);
+        }
+
+        // Mock payment confirmation
+        document.getElementById('confirm-payment').addEventListener('click', function() {
+            alert('Pagamento processado com sucesso! Em breve nossa equipe entrará em contato para agendar sua consulta personalizada.');
+            this.textContent = 'Pagamento Confirmado';
+            this.disabled = true;
+            this.style.background = '#95a5a6';
+        });
+    </script>
+</body>
+</html>
