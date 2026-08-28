@@ -3,7 +3,7 @@
 ## Estado salvo
 
 - Branch de trabalho: `DEV`
-- Último commit: `d5efc04` (`feat: expand free skincare assessment`)
+- Último commit funcional: `64f8648` (`fix: restore Next.js project configuration`)
 - Repositório: https://github.com/jhonymarquesads-art/SKINKILLA.git
 - O fluxo local estava limpo e sincronizado com `origin/DEV` antes deste arquivo.
 
@@ -19,8 +19,9 @@ O resultado gratuito é uma orientação geral e não substitui avaliação derm
 ## Validação e execução
 
 - `npx tsc --noEmit` passa.
-- Não existe script `lint` no `package.json`.
-- `npm run dev` executa `nodemon server.js` e já falhou anteriormente; verificar `server.js` e as dependências antes de iniciar.
+- `npm run dev` inicia o Next.js em `http://localhost:3000`.
+- `npm run lint` existe, mas ainda aponta problemas de lint antigos no projeto.
+- As alterações experimentais do Claude Code estão protegidas em `stash@{0}` e não foram incorporadas ao código funcional.
 - O fluxo pago continua em `PaymentModal`, `CameraScanner`, `/api/analyze` e `SkinReport`.
 
 ## Próximo passo recomendado
