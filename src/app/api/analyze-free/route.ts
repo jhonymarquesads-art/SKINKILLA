@@ -15,6 +15,22 @@ type PlanProduct = {
   priceMax: number;
 };
 
+const calculateGamification = (metrics: SkinMetrics) => {
+  const concernAverage = (metrics.wrinkles + metrics.darkSpots + metrics.redness + metrics.texture + metrics.oiliness) / 5;
+  const score = Math.max(35, Math.min(98, Math.round(100 - concernAverage)));
+  const potential = Math.min(99, score + Math.max(8, Math.round((100 - score) * 0.55)));
+  const level = score >= 80 ? 'Pele em equilíbrio' : score >= 60 ? 'Em evolução' : 'Começando sua jornada';
+
+  return {
+    score,
+    potential,
+    level,
+    pointsEarned: 100,
+    nextGoal: Math.min(100, score + 5),
+    message: `Você completou sua primeira avaliação e desbloqueou o nível "${level}".`,
+  };
+};
+
 // Free assessment provides directional guidance, not a medical diagnosis.
 const analyzeSkinImageFree = async (imageBase64: string) => {
   // Simulate processing delay
@@ -34,6 +50,7 @@ const analyzeSkinImageFree = async (imageBase64: string) => {
   const metrics = { wrinkles, darkSpots, redness, texture, oiliness };
   const routine = generateRoutine(metrics);
   const plan = generatePlan(metrics);
+  const gamification = calculateGamification(metrics);
 
   return {
     metrics: {
@@ -46,6 +63,7 @@ const analyzeSkinImageFree = async (imageBase64: string) => {
     routine,
     summary: generateFreeSummary(metrics),
     plan,
+    gamification,
   };
 };
 

@@ -33,12 +33,22 @@ interface SkinCarePlan {
   note: string;
 }
 
+interface Gamification {
+  score: number;
+  potential: number;
+  level: string;
+  pointsEarned: number;
+  nextGoal: number;
+  message: string;
+}
+
 interface FreeReportProps {
   evaluation: {
     metrics: SkinMetrics;
     routine: RoutineStep[];
     summary?: string;
     plan?: SkinCarePlan;
+    gamification?: Gamification;
     createdAt: string;
   };
 }
@@ -66,6 +76,8 @@ const FreeReport: React.FC<FreeReportProps> = ({ evaluation }) => {
 
   const formatCurrency = (value: number) =>
     value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  const gamification = evaluation.gamification;
 
   const handleUpgradeToFull = () => {
     // Navigate to payment step for full analysis
@@ -144,6 +156,40 @@ const FreeReport: React.FC<FreeReportProps> = ({ evaluation }) => {
           </div>
         </div>
       </div>
+
+      {gamification && (
+        <section className="rounded-lg bg-slate-900 p-6 text-white shadow-lg">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-orange-300">Seu primeiro check-in</p>
+              <h2 className="mt-1 text-2xl font-bold">{gamification.level}</h2>
+              <p className="mt-2 text-sm text-slate-300">{gamification.message}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs uppercase tracking-wider text-slate-400">Nota atual</p>
+              <p className="text-4xl font-bold text-orange-300">{gamification.score}<span className="text-lg text-slate-400">/100</span></p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-md border border-slate-700 bg-slate-800/70 p-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-300">Potencial estimado</span>
+                <strong className="text-emerald-300">{gamification.potential}/100</strong>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-slate-700">
+                <div className="h-2 rounded-full bg-emerald-400 transition-all" style={{ width: `${gamification.potential}%` }} />
+              </div>
+              <p className="mt-2 text-xs text-slate-400">Estimativa de evolução com constância, não uma promessa de resultado.</p>
+            </div>
+            <div className="rounded-md border border-slate-700 bg-slate-800/70 p-4">
+              <p className="text-sm text-slate-300">Conquista desbloqueada</p>
+              <p className="mt-1 text-lg font-bold text-yellow-300">+{gamification.pointsEarned} Glow Points</p>
+              <p className="mt-2 text-xs text-slate-400">Próximo objetivo: alcançar {gamification.nextGoal}/100 na sua próxima avaliação.</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Routine */}
       <div className="space-y-4">

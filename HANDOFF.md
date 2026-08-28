@@ -13,6 +13,7 @@
 2. `src/components/FreeAssessment.tsx` recebe a selfie e chama `POST /api/analyze-free`.
 3. `src/app/api/analyze-free/route.ts` retorna métricas simuladas, rotina adaptada, prioridades e plano de skin care com faixa de orçamento.
 4. `src/components/FreeReport.tsx` exibe métricas, rotina, produtos recomendados e investimento inicial estimado.
+5. A primeira avaliação também gera nota atual, potencial estimado, nível, `Glow Points` e próximo objetivo; o resultado é salvo em `localStorage` como `skinkilla:first-assessment`.
 
 O resultado gratuito é uma orientação geral e não substitui avaliação dermatológica. As métricas da imagem ainda são simuladas com números aleatórios; falta integrar um modelo/API de visão para análise real da selfie.
 

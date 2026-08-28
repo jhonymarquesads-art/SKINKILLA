@@ -36,10 +36,13 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
       if (!res.ok) {
         throw new Error(data.error || 'Não foi possível concluir a avaliação.');
       }
+      localStorage.setItem('skinkilla:first-assessment', JSON.stringify({ ...data, evaluatedAt: new Date().toISOString() }));
       onComplete(data);
     } catch {
       // Fallback em caso de erro na API - gerar dados mockados para demonstração
-      onComplete(await generateMockFreeAnalysis());
+      const fallback = await generateMockFreeAnalysis();
+      localStorage.setItem('skinkilla:first-assessment', JSON.stringify(fallback));
+      onComplete(fallback);
     } finally {
       setLoading(false);
     }
@@ -68,6 +71,9 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
           { category: 'Hidratação', recommendation: 'Hidratante com pantenol ou ceramidas', priceMin: 35, priceMax: 90 },
           { category: 'Proteção', recommendation: 'Protetor solar facial FPS 30 ou maior', priceMin: 45, priceMax: 100 },
         ];
+        const concernAverage = (wrinkles + darkSpots + redness + texture + oiliness) / 5;
+        const score = Math.max(35, Math.min(98, Math.round(100 - concernAverage)));
+        const potential = Math.min(99, score + Math.max(8, Math.round((100 - score) * 0.55)));
 
         resolve({
           metrics: {
@@ -86,6 +92,14 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
             totalMin: products.reduce((total, product) => total + product.priceMin, 0),
             totalMax: products.reduce((total, product) => total + product.priceMax, 0),
             note: 'Estimativa para montar a rotina inicial. Os valores variam por marca, tamanho e região.',
+          },
+          gamification: {
+            score,
+            potential,
+            level: score >= 80 ? 'Pele em equilíbrio' : score >= 60 ? 'Em evolução' : 'Começando sua jornada',
+            pointsEarned: 100,
+            nextGoal: Math.min(100, score + 5),
+            message: 'Você completou sua primeira avaliação e desbloqueou seu nível inicial.',
           },
         });
       }, 1500); // Simular delay de processamento
