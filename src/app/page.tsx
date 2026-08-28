@@ -97,21 +97,12 @@ function LandingPage({ onStart }: { onStart: () => void }) {
               </div>
             </div>
             <div className="relative">
-              {/* Placeholder for scanner preview with Korean porcelain skin image */}
-              <div className="w-full h-96 bg-gradient-to-b from-orange-50 to-orange-100 rounded-2xl overflow-hidden relative">
-                <div className="absolute inset-0 flex items-center justify-center text-orange-600 text-lg">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center mb-2">
-                      <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 012 2v12a2 2 0 01-2 2h-2.41a2 2 0 00-1.657-.87l-.714-1.07A2 2 0 009.17 15H6a2 2 0 01-2-2V9z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <p className="mt-2">Pré-visualização do Scanner</p>
-                  </div>
-                </div>
-                {/* Optional decorative wave */}
-                <div className="absolute bottom-0 left-0 w-full h-6 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1440 320%22><path fill=%22%23ffffff%22 fill-opacity=%221%22 d=%22M0,224L48,213.3C96,202.7,192,181.3,288,160C384,138.7,480,117.3,576,120C672,122.7,768,152,864,165.3C960,178.7,1056,178.7,1152,165.3C1248,152,1344,122.7,1392,108L1440,93.3L1440,320L0,320Z%22></path></svg>')]"></div>
+              <div className="w-full h-96 rounded-2xl overflow-hidden relative">
+                <img
+                  src="/eficacia.webp"
+                  alt="Eficácia da análise facial"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
