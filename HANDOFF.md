@@ -11,11 +11,11 @@
 
 1. `src/app/page.tsx` abre `FreeAssessment` e navega para `freeReport`.
 2. `src/components/FreeAssessment.tsx` recebe a selfie e chama `POST /api/analyze-free`.
-3. `src/app/api/analyze-free/route.ts` retorna métricas simuladas, rotina adaptada, prioridades e plano de skin care com faixa de orçamento.
+3. `src/app/api/analyze-free/route.ts` tenta analisar a selfie com Gemini Vision usando `GEMINI_API_KEY`; sem a variável, usa métricas simuladas, rotina adaptada, prioridades e plano de skin care com faixa de orçamento.
 4. `src/components/FreeReport.tsx` exibe métricas, rotina, produtos recomendados e investimento inicial estimado.
 5. A primeira avaliação também gera nota atual, potencial estimado, nível, `Glow Points` e próximo objetivo; o resultado é salvo em `localStorage` como `skinkilla:first-assessment`.
 
-O resultado gratuito é uma orientação geral e não substitui avaliação dermatológica. As métricas da imagem ainda são simuladas com números aleatórios; falta integrar um modelo/API de visão para análise real da selfie.
+O resultado gratuito é uma orientação geral e não substitui avaliação dermatológica. A resposta informa `source: gemini` quando a análise real é usada e `source: fallback` quando não há chave ou a API falha.
 
 ## Validação e execução
 
@@ -27,4 +27,4 @@ O resultado gratuito é uma orientação geral e não substitui avaliação derm
 
 ## Próximo passo recomendado
 
-Investigar o erro de `npm run dev` e, depois, integrar um provedor de visão/IA real para substituir as métricas aleatórias da rota gratuita.
+Configurar `GEMINI_API_KEY` no `.env.local` para ativar a análise real; nunca publicar esse valor no GitHub.

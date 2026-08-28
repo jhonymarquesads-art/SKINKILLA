@@ -31,9 +31,70 @@ const calculateGamification = (metrics: SkinMetrics) => {
   };
 };
 
+const clampScore = (value: unknown, fallback: number) => {
+  const score = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(score) ? Math.max(0, Math.min(100, Math.round(score))) : fallback;
+};
+
+const parseImage = (image: string) => {
+  const match = image.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (!match) return null;
+  return { mimeType: match[1], data: match[2] };
+};
+
+const analyzeWithGemini = async (image: string): Promise<SkinMetrics | null> => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  const parsedImage = parseImage(image);
+  if (!apiKey || !parsedImage) return null;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            {
+              inline_data: {
+                mime_type: parsedImage.mimeType,
+                data: parsedImage.data,
+              },
+            },
+            {
+              text: 'Avalie visualmente esta foto apenas de forma orientativa e não médica. Responda SOMENTE com JSON válido, sem markdown, neste formato exato: {"wrinkles":0,"darkSpots":0,"redness":0,"texture":0,"oiliness":0}. Cada valor deve ser um número inteiro de 0 a 100 representando a intensidade visual do sinal. Se a imagem não permitir avaliar algum item, use 50.',
+            },
+          ],
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          responseMimeType: 'application/json',
+        },
+      }),
+    },
+  );
+
+  if (!response.ok) return null;
+  const payload = await response.json();
+  const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (typeof text !== 'string') return null;
+
+  const result = JSON.parse(text) as Partial<SkinMetrics>;
+  return {
+    wrinkles: clampScore(result.wrinkles, 50),
+    darkSpots: clampScore(result.darkSpots, 50),
+    redness: clampScore(result.redness, 50),
+    texture: clampScore(result.texture, 50),
+    oiliness: clampScore(result.oiliness, 50),
+  };
+};
+
 // Free assessment provides directional guidance, not a medical diagnosis.
 const analyzeSkinImageFree = async (imageBase64: string) => {
-  // Simulate processing delay
+  const geminiMetrics = await analyzeWithGemini(imageBase64).catch(() => null);
+  if (geminiMetrics) return buildAssessment(geminiMetrics, 'gemini');
+
+  // Keep a local fallback so the free flow remains available without an API key.
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   // Generate random scores for demonstration (more limited range for free version)
@@ -47,25 +108,23 @@ const analyzeSkinImageFree = async (imageBase64: string) => {
   const texture = getRandomScore(10, 35); // Limited range
   const oiliness = getRandomScore(10, 60); // Limited range
 
-  const metrics = { wrinkles, darkSpots, redness, texture, oiliness };
-  const routine = generateRoutine(metrics);
-  const plan = generatePlan(metrics);
-  const gamification = calculateGamification(metrics);
-
-  return {
-    metrics: {
-      wrinkles_score: wrinkles,
-      dark_spots_score: darkSpots,
-      redness_score: redness,
-      texture_score: texture,
-      oiliness_score: oiliness,
-    },
-    routine,
-    summary: generateFreeSummary(metrics),
-    plan,
-    gamification,
-  };
+  return buildAssessment({ wrinkles, darkSpots, redness, texture, oiliness }, 'fallback');
 };
+
+const buildAssessment = (metrics: SkinMetrics, source: 'gemini' | 'fallback') => ({
+  metrics: {
+    wrinkles_score: metrics.wrinkles,
+    dark_spots_score: metrics.darkSpots,
+    redness_score: metrics.redness,
+    texture_score: metrics.texture,
+    oiliness_score: metrics.oiliness,
+  },
+  routine: generateRoutine(metrics),
+  summary: generateFreeSummary(metrics),
+  plan: generatePlan(metrics),
+  gamification: calculateGamification(metrics),
+  source,
+});
 
 const generateRoutine = (metrics: SkinMetrics) => {
   const { wrinkles, darkSpots, redness, texture, oiliness } = metrics;
