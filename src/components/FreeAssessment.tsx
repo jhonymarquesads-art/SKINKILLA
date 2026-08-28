@@ -33,10 +33,13 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
         body: JSON.stringify({ image }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Não foi possível concluir a avaliação.');
+      }
       onComplete(data);
     } catch {
       // Fallback em caso de erro na API - gerar dados mockados para demonstração
-      onComplete(generateMockFreeAnalysis());
+      onComplete(await generateMockFreeAnalysis());
     } finally {
       setLoading(false);
     }
@@ -57,8 +60,14 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
         const texture = getRandomScore(10, 40);
         const oiliness = getRandomScore(15, 70);
 
-        // Rotina básica (menos personalizada)
-        const routine = generateBasicRoutine({ wrinkles, darkSpots, redness, texture, oiliness });
+        const metrics = { wrinkles, darkSpots, redness, texture, oiliness };
+        const routine = generateBasicRoutine(metrics);
+        const products = [
+          { category: 'Limpeza', recommendation: oiliness > 45 ? 'Gel de limpeza suave' : 'Limpeza cremosa suave', priceMin: 25, priceMax: 55 },
+          { category: 'Tratamento principal', recommendation: darkSpots >= wrinkles ? 'Sérum de niacinamida' : 'Sérum antioxidante com vitamina C', priceMin: 45, priceMax: 110 },
+          { category: 'Hidratação', recommendation: 'Hidratante com pantenol ou ceramidas', priceMin: 35, priceMax: 90 },
+          { category: 'Proteção', recommendation: 'Protetor solar facial FPS 30 ou maior', priceMin: 45, priceMax: 100 },
+        ];
 
         resolve({
           metrics: {
@@ -69,7 +78,15 @@ export default function FreeAssessment({ onComplete }: FreeAssessmentProps) {
             oiliness_score: oiliness,
           },
           routine,
-          summary: generateFreeSummary({ wrinkles, darkSpots, redness, texture, oiliness }),
+          summary: generateFreeSummary(metrics),
+          plan: {
+            title: oiliness > 45 ? 'Foco em controle de oleosidade' : 'Foco em prevenção e equilíbrio',
+            priorities: ['proteção solar', oiliness > 45 ? 'controle de oleosidade' : 'hidratação', darkSpots > wrinkles ? 'uniformização de manchas' : 'prevenção de sinais'],
+            products,
+            totalMin: products.reduce((total, product) => total + product.priceMin, 0),
+            totalMax: products.reduce((total, product) => total + product.priceMax, 0),
+            note: 'Estimativa para montar a rotina inicial. Os valores variam por marca, tamanho e região.',
+          },
         });
       }, 1500); // Simular delay de processamento
     });

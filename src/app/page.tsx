@@ -9,7 +9,7 @@ import FreeReport from '@/components/FreeReport';
 import Image from 'next/image';
 
 
-type Step = 'landing' | 'payment' | 'freeAssessment' | 'scan' | 'report';
+type Step = 'landing' | 'payment' | 'freeAssessment' | 'freeReport' | 'scan' | 'report';
 
 export default function Home() {
   const [step, setStep] = useState<Step>('landing');

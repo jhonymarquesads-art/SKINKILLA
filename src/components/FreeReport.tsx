@@ -17,11 +17,28 @@ interface RoutineStep {
   keyIngredients: string[];
 }
 
+interface PlanProduct {
+  category: string;
+  recommendation: string;
+  priceMin: number;
+  priceMax: number;
+}
+
+interface SkinCarePlan {
+  title: string;
+  priorities: string[];
+  products: PlanProduct[];
+  totalMin: number;
+  totalMax: number;
+  note: string;
+}
+
 interface FreeReportProps {
   evaluation: {
     metrics: SkinMetrics;
     routine: RoutineStep[];
     summary?: string;
+    plan?: SkinCarePlan;
     createdAt: string;
   };
 }
@@ -46,6 +63,9 @@ const FreeReport: React.FC<FreeReportProps> = ({ evaluation }) => {
     if (score <= 66) return 'text-yellow-600';
     return 'text-red-600';
   };
+
+  const formatCurrency = (value: number) =>
+    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const handleUpgradeToFull = () => {
     // Navigate to payment step for full analysis
@@ -127,9 +147,9 @@ const FreeReport: React.FC<FreeReportProps> = ({ evaluation }) => {
 
       {/* Routine */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold mb-4">Sugestão de Rotina Básica</h2>
+        <h2 className="text-xl font-bold mb-4">Sua rotina inicial</h2>
         <p className="text-sm text-gray-500 mb-4">
-          Baseada na sua análise gratuita, aqui estão algumas recomendações básicas:
+          Uma orientação geral baseada nos sinais observados. Não substitui uma consulta dermatológica.
         </p>
 
         <div className="space-y-6">
@@ -168,6 +188,40 @@ const FreeReport: React.FC<FreeReportProps> = ({ evaluation }) => {
           ))}
         </div>
       </div>
+
+      {evaluation.plan && (
+        <section className="border border-orange-200 rounded-lg p-6 bg-orange-50">
+          <p className="text-sm font-semibold text-orange-700 uppercase tracking-wide">Plano de skin care</p>
+          <h2 className="text-xl font-bold text-orange-950 mt-1 mb-3">{evaluation.plan.title}</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Prioridades: {evaluation.plan.priorities.join(', ')}.
+          </p>
+
+          <div className="space-y-3">
+            {evaluation.plan.products.map((product) => (
+              <div key={product.category} className="flex flex-wrap items-center justify-between gap-2 border-b border-orange-200 pb-3 last:border-0 last:pb-0">
+                <div>
+                  <p className="font-semibold text-orange-950">{product.category}</p>
+                  <p className="text-sm text-gray-600">{product.recommendation}</p>
+                </div>
+                <span className="text-sm font-medium text-orange-800">
+                  {formatCurrency(product.priceMin)} a {formatCurrency(product.priceMax)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 pt-4 border-t border-orange-300 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-sm text-gray-600">Investimento inicial estimado</p>
+              <p className="text-2xl font-bold text-orange-950">
+                {formatCurrency(evaluation.plan.totalMin)} a {formatCurrency(evaluation.plan.totalMax)}
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-3">{evaluation.plan.note}</p>
+        </section>
+      )}
 
       {/* Upgrade option */}
       <div className="text-center py-6">
