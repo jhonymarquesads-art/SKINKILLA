@@ -4,17 +4,38 @@ import { useState } from 'react';
 import CameraScanner from '@/components/CameraScanner';
 import SkinReport from '@/components/SkinReport';
 import PaymentModal from '@/components/PaymentModal';
+import FreeAssessment from '@/components/FreeAssessment';
+import FreeReport from '@/components/FreeReport';
+import Image from 'next/image';
 
-type Step = 'landing' | 'payment' | 'scan' | 'report';
+
+type Step = 'landing' | 'payment' | 'freeAssessment' | 'freeReport' | 'scan' | 'report';
 
 export default function Home() {
   const [step, setStep] = useState<Step>('landing');
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [freeAnalysisResult, setFreeAnalysisResult] = useState<any>(null);
+
+  const handleStartFreeAssessment = async () => {
+    // For now, we'll simulate going to a free assessment step
+    // In a real implementation, this might redirect to a free assessment flow
+    setStep('freeAssessment');
+  };
 
   return (
     <main className="min-h-screen bg-[#F8F7F4] text-[#171717]">
-      {step === 'landing' && <LandingPage onStart={() => setStep('payment')} />}
+      {step === 'landing' && <LandingPage
+        onStart={() => setStep('payment')}
+        onStartFreeAssessment={handleStartFreeAssessment}
+      />}
       {step === 'payment' && <PaymentModal onSuccess={() => setStep('scan')} />}
+      {step === 'freeAssessment' && <FreeAssessment
+        onComplete={(data) => {
+          setFreeAnalysisResult(data);
+          setStep('freeReport');
+        }}
+      />}
+      {step === 'freeReport' && <FreeReport evaluation={{ ...freeAnalysisResult, createdAt: new Date().toISOString() }} />}
       {step === 'scan' && (
         <CameraScanner
           onComplete={(data) => {
@@ -28,8 +49,9 @@ export default function Home() {
   );
 }
 
+
 /* -------------------- Landing Page -------------------- */
-function LandingPage({ onStart }: { onStart: () => void }) {
+function LandingPage({ onStart, onStartFreeAssessment }: { onStart: () => void; onStartFreeAssessment: () => void }) {
   return (
     <>
       {/* Header / Navbar */}
@@ -79,7 +101,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
                 <button
-                  onClick={onStart}
+                  onClick={onStartFreeAssessment}
                   className="flex items-center gap-2 px-5 py-3 bg-orange-950 text-white rounded-md hover:bg-orange-800 transition-colors font-medium"
                 >
                   Fazer Avaliação Gratuita
@@ -107,6 +129,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
             </div>
           </div>
         </div>
+
       </section>
 
       {/* Trust & Social Proof Bar */}
@@ -423,10 +446,10 @@ function LandingPage({ onStart }: { onStart: () => void }) {
 
       {/* Sticky Mobile CTA Bar */}
       <button
-        onClick={onStart}
+        onClick={onStartFreeAssessment}
         className="fixed bottom-4 left-4 right-4 z-50 hidden md:block px-6 py-3 bg-orange-950 text-white rounded-xl text-center font-medium shadow-lg hover:bg-orange-800 transition-colors"
       >
-        Iniciar Análise Gratuita
+        Fazer Avaliação Gratuita
       </button>
     </>
   );

@@ -1,0 +1,228 @@
+
+> facial-skin-analysis@0.1.0 dev
+> next dev
+
+[1m[38;2;173;127;168m▲ Next.js 16.3.2[39m[22m (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://25.46.59.162:3000
+- Environments: .env.local
+[32m[1m✓[22m[39m Ready in 536ms
+[33m[1m⚠[22m[39m `eslint` configuration in next.config.ts is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+[33m[1m⚠[22m[39m Invalid next.config.ts options detected: 
+[33m[1m⚠[22m[39m     Unrecognized key(s) in object: 'eslint'
+[33m[1m⚠[22m[39m See more info here: https://nextjs.org/docs/messages/invalid-next-config
+[32m[1m✓[22m[39m Running next.config.ts took 37ms
+
+ GET / [32m200[39m in 387ms[2m (next.js: 225ms, application-code: 162ms)[22m
+[31m[1m⨯[22m[39m internal image response is empty for /eficacia.png
+ GET / [32m200[39m in 50ms[2m (next.js: 7ms, application-code: 43ms)[22m
+ GET /eficacia.png [33m404[39m in 86ms[2m (next.js: 43ms, application-code: 43ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 50ms[2m (next.js: 6ms, application-code: 44ms)[22m
+ GET /eficacia.png [33m404[39m in 54ms[2m (next.js: 15ms, application-code: 39ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 43ms[2m (next.js: 7ms, application-code: 37ms)[22m
+ GET /eficacia.png [33m404[39m in 79ms[2m (next.js: 32ms, application-code: 47ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 40ms[2m (next.js: 5ms, application-code: 35ms)[22m
+ GET /eficacia.png [33m404[39m in 60ms[2m (next.js: 16ms, application-code: 45ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 42ms[2m (next.js: 5ms, application-code: 37ms)[22m
+ GET /eficacia.png [33m404[39m in 72ms[2m (next.js: 13ms, application-code: 59ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 43ms[2m (next.js: 6ms, application-code: 37ms)[22m
+ GET /eficacia.png [33m404[39m in 45ms[2m (next.js: 13ms, application-code: 32ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 45ms[2m (next.js: 7ms, application-code: 38ms)[22m
+ GET /eficacia.png [33m404[39m in 67ms[2m (next.js: 11ms, application-code: 56ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png received [1mnull[22m
+ GET / [32m200[39m in 49ms[2m (next.js: 12ms, application-code: 37ms)[22m
+ GET /eficacia.png.webp [33m404[39m in 45ms[2m (next.js: 17ms, application-code: 28ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png.webp received [1mnull[22m
+ GET / [32m200[39m in 49ms[2m (next.js: 7ms, application-code: 42ms)[22m
+ GET /eficacia.png.webp [33m404[39m in 52ms[2m (next.js: 18ms, application-code: 34ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png.webp received [1mnull[22m
+ GET /eficacia.png.webp [33m404[39m in 40ms[2m (next.js: 9ms, application-code: 31ms)[22m
+ GET / [32m200[39m in 35ms[2m (next.js: 5ms, application-code: 29ms)[22m
+ GET /eficacia.png.webp [33m404[39m in 46ms[2m (next.js: 13ms, application-code: 33ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png.webp received [1mnull[22m
+ GET / [32m200[39m in 38ms[2m (next.js: 5ms, application-code: 33ms)[22m
+ GET /eficacia.png.webp [33m404[39m in 56ms[2m (next.js: 11ms, application-code: 45ms)[22m
+[31m[1m⨯[22m[39m The requested resource isn't a valid image for /eficacia.png.webp received [1mnull[22m
+ GET / [32m200[39m in 44ms[2m (next.js: 9ms, application-code: 35ms)[22m
+ GET / [32m200[39m in 94ms[2m (next.js: 41ms, application-code: 53ms)[22m
+[32m[1m✓[22m[39m Compiled in 297ms
+[31m[1m⨯[22m[39m ./src/components/PaymentModal.tsx:1:5
+[1m[31mError[39m: Expected ';', '}' or <eof>[22m
+[31m[1m>[0m [90m1 |[0m use client[32m';[0m
+  [90m  |[0m     [31m[1m^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [32mimport { useState } from '[0mreact[32m';[0m
+  [90m4 |[0m
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+
+ GET / [31m500[39m in 812ms[2m (next.js: 651ms, application-code: 161ms)[22m
+[36m[browser][39m ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[36m[browser][39m [31mUncaught Error: ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+[39m
+[31m    at <unknown> (Error: ./src/components/PaymentModal.tsx:1:5)
+    at <unknown> (Error: (./src/components/PaymentModal.tsx:1:5)[39m
+[36m[browser][39m ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[31m[1m⨯[22m[39m ./src/components/PaymentModal.tsx:1:5
+[1m[31mError[39m: Expected ';', '}' or <eof>[22m
+[31m[1m>[0m [90m1 |[0m use client[32m';[0m
+  [90m  |[0m     [31m[1m^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [32mimport { useState } from '[0mreact[32m';[0m
+  [90m4 |[0m
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+
+ GET / [31m500[39m in 28ms[2m (next.js: 13ms, application-code: 14ms)[22m
+[36m[browser][39m [31mUncaught Error: ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+[39m
+[31m    at <unknown> (Error: ./src/components/PaymentModal.tsx:1:5)
+    at <unknown> (Error: (./src/components/PaymentModal.tsx:1:5)[39m
+[36m[browser][39m ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
+[36m[browser][39m ./src/components/PaymentModal.tsx:1:5
+Error: Expected ';', '}' or <eof>
+> 1 | use client';
+    |     ^^^^^^
+  2 |
+  3 | import { useState } from 'react';
+  4 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./src/components/PaymentModal.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/PaymentModal.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component] 
